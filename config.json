@@ -1,0 +1,24 @@
+{
+  "chains": [
+    {
+      "rpc": "https://rpc.ankr.com/eth",
+      "factory": "0x6146DD43C5622bB6D12A5240ab9CF4de14eDC625",
+      "rfq": "0x6146DD43C5622bB6D12A5240ab9CF4de14eDC625"
+    },
+    {
+      "rpc": "https://rpc.ankr.com/base",
+      "factory": "0x214f62B5836D83f3D6c4f71F174209097B1A779C",
+      "rfq": "0xA3A1e968Bd6C578205E11256c8e6929f21742aAF"
+    },
+    {
+      "rpc": "https://rpc.ankr.com/optimism",
+      "factory": "0xA3A1e968Bd6C578205E11256c8e6929f21742aAF",
+      "rfq": "0xA3A1e968Bd6C578205E11256c8e6929f21742aAF"
+    },
+    {
+      "rpc": "https://rpc.ankr.com/arbitrum",
+      "factory": "0xA3A1e968Bd6C578205E11256c8e6929f21742aAF",
+      "rfq": "0xA3A1e968Bd6C578205E11256c8e6929f21742aAF"
+    }
+  ]
+}
