@@ -7,14 +7,24 @@ import (
 
 	"github.com/ethereum/go-ethereum/common"
 
+	"ajna-rfq/internal/repo"
 	"ajna-rfq/internal/service"
 	"ajna-rfq/internal/types"
 )
 
+type OrdersListResponse struct {
+	Items    []*repo.StoredOrder         `json:"items"`
+	NextPage *OrdersListNextPageResponse `json:"nextPage,omitempty"`
+}
+
+type OrdersListNextPageResponse struct {
+	CreatedBefore int64 `json:"createdBefore"`
+}
+
 func NewRouter(svc *service.Service) *http.ServeMux {
 	mux := http.NewServeMux()
 
-	mux.HandleFunc("GET /api/v1/{chainId}/make-orders", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("GET /api/v1/{chainId}/orders", func(w http.ResponseWriter, r *http.Request) {
 		cs, err := svc.ChainService(r.PathValue("chainId"))
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
@@ -22,64 +32,43 @@ func NewRouter(svc *service.Service) *http.ServeMux {
 		}
 
 		q := r.URL.Query()
-		maker := common.HexToAddress(q.Get("maker"))
-		pools := make([]common.Address, len(q["pool"]))
+		filter := repo.Filter{}
+		filter.LpOrder = q.Get("lpOrder") != "false"
+		filter.Active = q.Get("active") == "true"
+		if q.Has("maker") {
+			addr := common.HexToAddress(q.Get("maker"))
+			filter.Maker = &addr
+		}
+		if q.Has("taker") {
+			addr := common.HexToAddress(q.Get("taker"))
+			filter.Taker = &addr
+		}
 		for _, pool := range q["pool"] {
 			if addr := common.HexToAddress(pool); addr != (common.Address{}) {
-				pools = append(pools, addr)
+				filter.Pools = append(filter.Pools, addr)
 			}
 		}
-		var createdBefore *uint64
-		if num, err := strconv.ParseUint(q.Get("createdBefore"), 10, 64); err == nil {
-			createdBefore = &num
+		if num, err := strconv.ParseInt(q.Get("createdBefore"), 10, 64); err == nil {
+			filter.CreatedBefore = &num
 		}
 
-		orders, err := cs.ListMakeOrders(maker, pools, createdBefore)
+		orders, nextCreatedBefore, err := cs.ListOrders(filter, 10)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
-		err = json.NewEncoder(w).Encode(orders)
+		res := OrdersListResponse{Items: orders}
+		if nextCreatedBefore != nil {
+			res.NextPage = &OrdersListNextPageResponse{CreatedBefore: *nextCreatedBefore}
+		}
+		err = json.NewEncoder(w).Encode(res)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
 		}
 	})
-	mux.HandleFunc("GET /api/v1/{chainId}/take-orders", func(w http.ResponseWriter, r *http.Request) {
-		cs, err := svc.ChainService(r.PathValue("chainId"))
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusBadRequest)
-			return
-		}
 
-		q := r.URL.Query()
-		var taker *common.Address
-		if addr := common.HexToAddress(q.Get("taker")); addr != (common.Address{}) {
-			taker = &addr
-		}
-		pools := make([]common.Address, len(q["pool"]))
-		for _, pool := range q["pool"] {
-			if addr := common.HexToAddress(pool); addr != (common.Address{}) {
-				pools = append(pools, addr)
-			}
-		}
-		var createdBefore *uint64
-		if num, err := strconv.ParseUint(q.Get("createdBefore"), 10, 64); err == nil {
-			createdBefore = &num
-		}
-
-		orders, err := cs.ListTakeOrders(taker, pools, createdBefore)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		err = json.NewEncoder(w).Encode(orders)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	})
-	mux.HandleFunc("PUT /api/v1/{chainId}/orders", func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("POST /api/v1/{chainId}/orders", func(w http.ResponseWriter, r *http.Request) {
 		defer r.Body.Close()
 
 		cs, err := svc.ChainService(r.PathValue("chainId"))

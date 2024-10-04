@@ -31,6 +31,7 @@ var (
 
 // IAjnaRFQOrder is an auto generated low-level Go binding around an user-defined struct.
 type IAjnaRFQOrder struct {
+	LpOrder       bool
 	Maker         common.Address
 	Taker         common.Address
 	Pool          common.Address
@@ -43,7 +44,7 @@ type IAjnaRFQOrder struct {
 
 // RFQMetaData contains all meta data concerning the RFQ contract.
 var RFQMetaData = &bind.MetaData{
-	ABI: "[{\"type\":\"constructor\",\"inputs\":[{\"name\":\"_owner\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"_fee\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"ORDER_TYPEHASH\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"approveOrder\",\"inputs\":[{\"name\":\"order_\",\"type\":\"tuple\",\"internalType\":\"structIAjnaRFQ.Order\",\"components\":[{\"name\":\"maker\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"taker\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"pool\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"index\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"makeAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"minMakeAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"expiry\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"price\",\"type\":\"uint256\",\"internalType\":\"uint256\"}]}],\"outputs\":[{\"name\":\"hash\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"approveOrder\",\"inputs\":[{\"name\":\"hash_\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"approvedOrders\",\"inputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"outputs\":[{\"name\":\"\",\"type\":\"bool\",\"internalType\":\"bool\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"cancelOrder\",\"inputs\":[{\"name\":\"hash_\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"eip712Domain\",\"inputs\":[],\"outputs\":[{\"name\":\"fields\",\"type\":\"bytes1\",\"internalType\":\"bytes1\"},{\"name\":\"name\",\"type\":\"string\",\"internalType\":\"string\"},{\"name\":\"version\",\"type\":\"string\",\"internalType\":\"string\"},{\"name\":\"chainId\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"verifyingContract\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"salt\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"},{\"name\":\"extensions\",\"type\":\"uint256[]\",\"internalType\":\"uint256[]\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"fee\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"fillOrder\",\"inputs\":[{\"name\":\"order_\",\"type\":\"tuple\",\"internalType\":\"structIAjnaRFQ.Order\",\"components\":[{\"name\":\"maker\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"taker\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"pool\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"index\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"makeAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"minMakeAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"expiry\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"price\",\"type\":\"uint256\",\"internalType\":\"uint256\"}]},{\"name\":\"signature_\",\"type\":\"bytes\",\"internalType\":\"bytes\"},{\"name\":\"to_\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"fillQuoteAmount_\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"minFillQuoteAmount_\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"expiry_\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"payable\"},{\"type\":\"function\",\"name\":\"filledAmounts\",\"inputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"hashOrder\",\"inputs\":[{\"name\":\"order\",\"type\":\"tuple\",\"internalType\":\"structIAjnaRFQ.Order\",\"components\":[{\"name\":\"maker\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"taker\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"pool\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"index\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"makeAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"minMakeAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"expiry\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"price\",\"type\":\"uint256\",\"internalType\":\"uint256\"}]}],\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"stateMutability\":\"pure\"},{\"type\":\"function\",\"name\":\"multicall\",\"inputs\":[{\"name\":\"data\",\"type\":\"bytes[]\",\"internalType\":\"bytes[]\"}],\"outputs\":[{\"name\":\"results\",\"type\":\"bytes[]\",\"internalType\":\"bytes[]\"}],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"owner\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"renounceOwnership\",\"inputs\":[],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"transferOwnership\",\"inputs\":[{\"name\":\"newOwner\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"updateFee\",\"inputs\":[{\"name\":\"fee_\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"event\",\"name\":\"EIP712DomainChanged\",\"inputs\":[],\"anonymous\":false},{\"type\":\"event\",\"name\":\"OwnershipTransferred\",\"inputs\":[{\"name\":\"previousOwner\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"},{\"name\":\"newOwner\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"error\",\"name\":\"AddressEmptyCode\",\"inputs\":[{\"name\":\"target\",\"type\":\"address\",\"internalType\":\"address\"}]},{\"type\":\"error\",\"name\":\"FailedCall\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"FillAmountTooLowForMaker\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"FillAmountTooLowForTaker\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"FillExpired\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidAmount\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidFee\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidLPBalance\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidMsgValue\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidPrice\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidShortString\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidSignature\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"MissingLP\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"NotAuthorized\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"OrderAlreadyFilled\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"OrderCancelled\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"OrderExpired\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"OwnableInvalidOwner\",\"inputs\":[{\"name\":\"owner\",\"type\":\"address\",\"internalType\":\"address\"}]},{\"type\":\"error\",\"name\":\"OwnableUnauthorizedAccount\",\"inputs\":[{\"name\":\"account\",\"type\":\"address\",\"internalType\":\"address\"}]},{\"type\":\"error\",\"name\":\"SafeERC20FailedOperation\",\"inputs\":[{\"name\":\"token\",\"type\":\"address\",\"internalType\":\"address\"}]},{\"type\":\"error\",\"name\":\"StringTooLong\",\"inputs\":[{\"name\":\"str\",\"type\":\"string\",\"internalType\":\"string\"}]}]",
+	ABI: "[{\"type\":\"constructor\",\"inputs\":[{\"name\":\"owner_\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"fee_\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"DOMAIN_SEPARATOR\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"ORDER_TYPEHASH\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"approveOrder\",\"inputs\":[{\"name\":\"order_\",\"type\":\"tuple\",\"internalType\":\"structIAjnaRFQ.Order\",\"components\":[{\"name\":\"lpOrder\",\"type\":\"bool\",\"internalType\":\"bool\"},{\"name\":\"maker\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"taker\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"pool\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"index\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"makeAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"minMakeAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"expiry\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"price\",\"type\":\"uint256\",\"internalType\":\"uint256\"}]}],\"outputs\":[{\"name\":\"hash\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"approveOrder\",\"inputs\":[{\"name\":\"hash_\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"approvedOrders\",\"inputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"outputs\":[{\"name\":\"\",\"type\":\"bool\",\"internalType\":\"bool\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"cancelOrder\",\"inputs\":[{\"name\":\"hash_\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"eip712Domain\",\"inputs\":[],\"outputs\":[{\"name\":\"fields\",\"type\":\"bytes1\",\"internalType\":\"bytes1\"},{\"name\":\"name\",\"type\":\"string\",\"internalType\":\"string\"},{\"name\":\"version\",\"type\":\"string\",\"internalType\":\"string\"},{\"name\":\"chainId\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"verifyingContract\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"salt\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"},{\"name\":\"extensions\",\"type\":\"uint256[]\",\"internalType\":\"uint256[]\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"fee\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"fillOrder\",\"inputs\":[{\"name\":\"order_\",\"type\":\"tuple\",\"internalType\":\"structIAjnaRFQ.Order\",\"components\":[{\"name\":\"lpOrder\",\"type\":\"bool\",\"internalType\":\"bool\"},{\"name\":\"maker\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"taker\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"pool\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"index\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"makeAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"minMakeAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"expiry\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"price\",\"type\":\"uint256\",\"internalType\":\"uint256\"}]},{\"name\":\"signature_\",\"type\":\"bytes\",\"internalType\":\"bytes\"},{\"name\":\"to_\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"index_\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"fillAmount_\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"minFillAmount_\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"expiry_\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"payable\"},{\"type\":\"function\",\"name\":\"filledAmounts\",\"inputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"outputs\":[{\"name\":\"\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"hashOrder\",\"inputs\":[{\"name\":\"order_\",\"type\":\"tuple\",\"internalType\":\"structIAjnaRFQ.Order\",\"components\":[{\"name\":\"lpOrder\",\"type\":\"bool\",\"internalType\":\"bool\"},{\"name\":\"maker\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"taker\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"pool\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"index\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"makeAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"minMakeAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"expiry\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"price\",\"type\":\"uint256\",\"internalType\":\"uint256\"}]}],\"outputs\":[{\"name\":\"\",\"type\":\"bytes32\",\"internalType\":\"bytes32\"}],\"stateMutability\":\"pure\"},{\"type\":\"function\",\"name\":\"multicall\",\"inputs\":[{\"name\":\"data\",\"type\":\"bytes[]\",\"internalType\":\"bytes[]\"}],\"outputs\":[{\"name\":\"results\",\"type\":\"bytes[]\",\"internalType\":\"bytes[]\"}],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"owner\",\"inputs\":[],\"outputs\":[{\"name\":\"\",\"type\":\"address\",\"internalType\":\"address\"}],\"stateMutability\":\"view\"},{\"type\":\"function\",\"name\":\"renounceOwnership\",\"inputs\":[],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"transferOwnership\",\"inputs\":[{\"name\":\"newOwner\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"updateFee\",\"inputs\":[{\"name\":\"fee_\",\"type\":\"uint256\",\"internalType\":\"uint256\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"function\",\"name\":\"withdrawFee\",\"inputs\":[{\"name\":\"token_\",\"type\":\"address\",\"internalType\":\"address\"}],\"outputs\":[],\"stateMutability\":\"nonpayable\"},{\"type\":\"event\",\"name\":\"ApprovedOrder\",\"inputs\":[{\"name\":\"hash\",\"type\":\"bytes32\",\"indexed\":true,\"internalType\":\"bytes32\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"CancelledOrder\",\"inputs\":[{\"name\":\"hash\",\"type\":\"bytes32\",\"indexed\":true,\"internalType\":\"bytes32\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"EIP712DomainChanged\",\"inputs\":[],\"anonymous\":false},{\"type\":\"event\",\"name\":\"FilledOrder\",\"inputs\":[{\"name\":\"hash\",\"type\":\"bytes32\",\"indexed\":true,\"internalType\":\"bytes32\"},{\"name\":\"taker\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"},{\"name\":\"order\",\"type\":\"tuple\",\"indexed\":false,\"internalType\":\"structIAjnaRFQ.Order\",\"components\":[{\"name\":\"lpOrder\",\"type\":\"bool\",\"internalType\":\"bool\"},{\"name\":\"maker\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"taker\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"pool\",\"type\":\"address\",\"internalType\":\"address\"},{\"name\":\"index\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"makeAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"minMakeAmount\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"expiry\",\"type\":\"uint256\",\"internalType\":\"uint256\"},{\"name\":\"price\",\"type\":\"uint256\",\"internalType\":\"uint256\"}]},{\"name\":\"lpAmount\",\"type\":\"uint256\",\"indexed\":false,\"internalType\":\"uint256\"},{\"name\":\"quoteAmount\",\"type\":\"uint256\",\"indexed\":false,\"internalType\":\"uint256\"}],\"anonymous\":false},{\"type\":\"event\",\"name\":\"OwnershipTransferred\",\"inputs\":[{\"name\":\"previousOwner\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"},{\"name\":\"newOwner\",\"type\":\"address\",\"indexed\":true,\"internalType\":\"address\"}],\"anonymous\":false},{\"type\":\"error\",\"name\":\"AddressEmptyCode\",\"inputs\":[{\"name\":\"target\",\"type\":\"address\",\"internalType\":\"address\"}]},{\"type\":\"error\",\"name\":\"FailedCall\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"FillAmountTooLowForMaker\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"FillAmountTooLowForTaker\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"FillExpired\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidAmount\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidFee\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidIndex\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidLPBalance\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidMsgValue\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidPrice\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidShortString\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"InvalidSignature\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"MissingLP\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"NotAuthorized\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"OrderAlreadyFilled\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"OrderCancelled\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"OrderExpired\",\"inputs\":[]},{\"type\":\"error\",\"name\":\"OwnableInvalidOwner\",\"inputs\":[{\"name\":\"owner\",\"type\":\"address\",\"internalType\":\"address\"}]},{\"type\":\"error\",\"name\":\"OwnableUnauthorizedAccount\",\"inputs\":[{\"name\":\"account\",\"type\":\"address\",\"internalType\":\"address\"}]},{\"type\":\"error\",\"name\":\"SafeERC20FailedOperation\",\"inputs\":[{\"name\":\"token\",\"type\":\"address\",\"internalType\":\"address\"}]},{\"type\":\"error\",\"name\":\"StringTooLong\",\"inputs\":[{\"name\":\"str\",\"type\":\"string\",\"internalType\":\"string\"}]}]",
 }
 
 // RFQABI is the input ABI used to generate the binding from.
@@ -190,6 +191,37 @@ func (_RFQ *RFQTransactorRaw) Transfer(opts *bind.TransactOpts) (*types.Transact
 // Transact invokes the (paid) contract method with params as input values.
 func (_RFQ *RFQTransactorRaw) Transact(opts *bind.TransactOpts, method string, params ...interface{}) (*types.Transaction, error) {
 	return _RFQ.Contract.contract.Transact(opts, method, params...)
+}
+
+// DOMAINSEPARATOR is a free data retrieval call binding the contract method 0x3644e515.
+//
+// Solidity: function DOMAIN_SEPARATOR() view returns(bytes32)
+func (_RFQ *RFQCaller) DOMAINSEPARATOR(opts *bind.CallOpts) ([32]byte, error) {
+	var out []interface{}
+	err := _RFQ.contract.Call(opts, &out, "DOMAIN_SEPARATOR")
+
+	if err != nil {
+		return *new([32]byte), err
+	}
+
+	out0 := *abi.ConvertType(out[0], new([32]byte)).(*[32]byte)
+
+	return out0, err
+
+}
+
+// DOMAINSEPARATOR is a free data retrieval call binding the contract method 0x3644e515.
+//
+// Solidity: function DOMAIN_SEPARATOR() view returns(bytes32)
+func (_RFQ *RFQSession) DOMAINSEPARATOR() ([32]byte, error) {
+	return _RFQ.Contract.DOMAINSEPARATOR(&_RFQ.CallOpts)
+}
+
+// DOMAINSEPARATOR is a free data retrieval call binding the contract method 0x3644e515.
+//
+// Solidity: function DOMAIN_SEPARATOR() view returns(bytes32)
+func (_RFQ *RFQCallerSession) DOMAINSEPARATOR() ([32]byte, error) {
+	return _RFQ.Contract.DOMAINSEPARATOR(&_RFQ.CallOpts)
 }
 
 // ORDERTYPEHASH is a free data retrieval call binding the contract method 0xf973a209.
@@ -386,12 +418,12 @@ func (_RFQ *RFQCallerSession) FilledAmounts(arg0 common.Address, arg1 [32]byte) 
 	return _RFQ.Contract.FilledAmounts(&_RFQ.CallOpts, arg0, arg1)
 }
 
-// HashOrder is a free data retrieval call binding the contract method 0x38053926.
+// HashOrder is a free data retrieval call binding the contract method 0x84669a90.
 //
-// Solidity: function hashOrder((address,address,address,uint256,uint256,uint256,uint256,uint256) order) pure returns(bytes32)
-func (_RFQ *RFQCaller) HashOrder(opts *bind.CallOpts, order IAjnaRFQOrder) ([32]byte, error) {
+// Solidity: function hashOrder((bool,address,address,address,uint256,uint256,uint256,uint256,uint256) order_) pure returns(bytes32)
+func (_RFQ *RFQCaller) HashOrder(opts *bind.CallOpts, order_ IAjnaRFQOrder) ([32]byte, error) {
 	var out []interface{}
-	err := _RFQ.contract.Call(opts, &out, "hashOrder", order)
+	err := _RFQ.contract.Call(opts, &out, "hashOrder", order_)
 
 	if err != nil {
 		return *new([32]byte), err
@@ -403,18 +435,18 @@ func (_RFQ *RFQCaller) HashOrder(opts *bind.CallOpts, order IAjnaRFQOrder) ([32]
 
 }
 
-// HashOrder is a free data retrieval call binding the contract method 0x38053926.
+// HashOrder is a free data retrieval call binding the contract method 0x84669a90.
 //
-// Solidity: function hashOrder((address,address,address,uint256,uint256,uint256,uint256,uint256) order) pure returns(bytes32)
-func (_RFQ *RFQSession) HashOrder(order IAjnaRFQOrder) ([32]byte, error) {
-	return _RFQ.Contract.HashOrder(&_RFQ.CallOpts, order)
+// Solidity: function hashOrder((bool,address,address,address,uint256,uint256,uint256,uint256,uint256) order_) pure returns(bytes32)
+func (_RFQ *RFQSession) HashOrder(order_ IAjnaRFQOrder) ([32]byte, error) {
+	return _RFQ.Contract.HashOrder(&_RFQ.CallOpts, order_)
 }
 
-// HashOrder is a free data retrieval call binding the contract method 0x38053926.
+// HashOrder is a free data retrieval call binding the contract method 0x84669a90.
 //
-// Solidity: function hashOrder((address,address,address,uint256,uint256,uint256,uint256,uint256) order) pure returns(bytes32)
-func (_RFQ *RFQCallerSession) HashOrder(order IAjnaRFQOrder) ([32]byte, error) {
-	return _RFQ.Contract.HashOrder(&_RFQ.CallOpts, order)
+// Solidity: function hashOrder((bool,address,address,address,uint256,uint256,uint256,uint256,uint256) order_) pure returns(bytes32)
+func (_RFQ *RFQCallerSession) HashOrder(order_ IAjnaRFQOrder) ([32]byte, error) {
+	return _RFQ.Contract.HashOrder(&_RFQ.CallOpts, order_)
 }
 
 // Owner is a free data retrieval call binding the contract method 0x8da5cb5b.
@@ -448,23 +480,23 @@ func (_RFQ *RFQCallerSession) Owner() (common.Address, error) {
 	return _RFQ.Contract.Owner(&_RFQ.CallOpts)
 }
 
-// ApproveOrder is a paid mutator transaction binding the contract method 0x3285d5cb.
+// ApproveOrder is a paid mutator transaction binding the contract method 0x8546c30a.
 //
-// Solidity: function approveOrder((address,address,address,uint256,uint256,uint256,uint256,uint256) order_) returns(bytes32 hash)
+// Solidity: function approveOrder((bool,address,address,address,uint256,uint256,uint256,uint256,uint256) order_) returns(bytes32 hash)
 func (_RFQ *RFQTransactor) ApproveOrder(opts *bind.TransactOpts, order_ IAjnaRFQOrder) (*types.Transaction, error) {
 	return _RFQ.contract.Transact(opts, "approveOrder", order_)
 }
 
-// ApproveOrder is a paid mutator transaction binding the contract method 0x3285d5cb.
+// ApproveOrder is a paid mutator transaction binding the contract method 0x8546c30a.
 //
-// Solidity: function approveOrder((address,address,address,uint256,uint256,uint256,uint256,uint256) order_) returns(bytes32 hash)
+// Solidity: function approveOrder((bool,address,address,address,uint256,uint256,uint256,uint256,uint256) order_) returns(bytes32 hash)
 func (_RFQ *RFQSession) ApproveOrder(order_ IAjnaRFQOrder) (*types.Transaction, error) {
 	return _RFQ.Contract.ApproveOrder(&_RFQ.TransactOpts, order_)
 }
 
-// ApproveOrder is a paid mutator transaction binding the contract method 0x3285d5cb.
+// ApproveOrder is a paid mutator transaction binding the contract method 0x8546c30a.
 //
-// Solidity: function approveOrder((address,address,address,uint256,uint256,uint256,uint256,uint256) order_) returns(bytes32 hash)
+// Solidity: function approveOrder((bool,address,address,address,uint256,uint256,uint256,uint256,uint256) order_) returns(bytes32 hash)
 func (_RFQ *RFQTransactorSession) ApproveOrder(order_ IAjnaRFQOrder) (*types.Transaction, error) {
 	return _RFQ.Contract.ApproveOrder(&_RFQ.TransactOpts, order_)
 }
@@ -511,25 +543,25 @@ func (_RFQ *RFQTransactorSession) CancelOrder(hash_ [32]byte) (*types.Transactio
 	return _RFQ.Contract.CancelOrder(&_RFQ.TransactOpts, hash_)
 }
 
-// FillOrder is a paid mutator transaction binding the contract method 0xdff1507c.
+// FillOrder is a paid mutator transaction binding the contract method 0x5abc8909.
 //
-// Solidity: function fillOrder((address,address,address,uint256,uint256,uint256,uint256,uint256) order_, bytes signature_, address to_, uint256 fillQuoteAmount_, uint256 minFillQuoteAmount_, uint256 expiry_) payable returns(uint256, uint256)
-func (_RFQ *RFQTransactor) FillOrder(opts *bind.TransactOpts, order_ IAjnaRFQOrder, signature_ []byte, to_ common.Address, fillQuoteAmount_ *big.Int, minFillQuoteAmount_ *big.Int, expiry_ *big.Int) (*types.Transaction, error) {
-	return _RFQ.contract.Transact(opts, "fillOrder", order_, signature_, to_, fillQuoteAmount_, minFillQuoteAmount_, expiry_)
+// Solidity: function fillOrder((bool,address,address,address,uint256,uint256,uint256,uint256,uint256) order_, bytes signature_, address to_, uint256 index_, uint256 fillAmount_, uint256 minFillAmount_, uint256 expiry_) payable returns(uint256, uint256)
+func (_RFQ *RFQTransactor) FillOrder(opts *bind.TransactOpts, order_ IAjnaRFQOrder, signature_ []byte, to_ common.Address, index_ *big.Int, fillAmount_ *big.Int, minFillAmount_ *big.Int, expiry_ *big.Int) (*types.Transaction, error) {
+	return _RFQ.contract.Transact(opts, "fillOrder", order_, signature_, to_, index_, fillAmount_, minFillAmount_, expiry_)
 }
 
-// FillOrder is a paid mutator transaction binding the contract method 0xdff1507c.
+// FillOrder is a paid mutator transaction binding the contract method 0x5abc8909.
 //
-// Solidity: function fillOrder((address,address,address,uint256,uint256,uint256,uint256,uint256) order_, bytes signature_, address to_, uint256 fillQuoteAmount_, uint256 minFillQuoteAmount_, uint256 expiry_) payable returns(uint256, uint256)
-func (_RFQ *RFQSession) FillOrder(order_ IAjnaRFQOrder, signature_ []byte, to_ common.Address, fillQuoteAmount_ *big.Int, minFillQuoteAmount_ *big.Int, expiry_ *big.Int) (*types.Transaction, error) {
-	return _RFQ.Contract.FillOrder(&_RFQ.TransactOpts, order_, signature_, to_, fillQuoteAmount_, minFillQuoteAmount_, expiry_)
+// Solidity: function fillOrder((bool,address,address,address,uint256,uint256,uint256,uint256,uint256) order_, bytes signature_, address to_, uint256 index_, uint256 fillAmount_, uint256 minFillAmount_, uint256 expiry_) payable returns(uint256, uint256)
+func (_RFQ *RFQSession) FillOrder(order_ IAjnaRFQOrder, signature_ []byte, to_ common.Address, index_ *big.Int, fillAmount_ *big.Int, minFillAmount_ *big.Int, expiry_ *big.Int) (*types.Transaction, error) {
+	return _RFQ.Contract.FillOrder(&_RFQ.TransactOpts, order_, signature_, to_, index_, fillAmount_, minFillAmount_, expiry_)
 }
 
-// FillOrder is a paid mutator transaction binding the contract method 0xdff1507c.
+// FillOrder is a paid mutator transaction binding the contract method 0x5abc8909.
 //
-// Solidity: function fillOrder((address,address,address,uint256,uint256,uint256,uint256,uint256) order_, bytes signature_, address to_, uint256 fillQuoteAmount_, uint256 minFillQuoteAmount_, uint256 expiry_) payable returns(uint256, uint256)
-func (_RFQ *RFQTransactorSession) FillOrder(order_ IAjnaRFQOrder, signature_ []byte, to_ common.Address, fillQuoteAmount_ *big.Int, minFillQuoteAmount_ *big.Int, expiry_ *big.Int) (*types.Transaction, error) {
-	return _RFQ.Contract.FillOrder(&_RFQ.TransactOpts, order_, signature_, to_, fillQuoteAmount_, minFillQuoteAmount_, expiry_)
+// Solidity: function fillOrder((bool,address,address,address,uint256,uint256,uint256,uint256,uint256) order_, bytes signature_, address to_, uint256 index_, uint256 fillAmount_, uint256 minFillAmount_, uint256 expiry_) payable returns(uint256, uint256)
+func (_RFQ *RFQTransactorSession) FillOrder(order_ IAjnaRFQOrder, signature_ []byte, to_ common.Address, index_ *big.Int, fillAmount_ *big.Int, minFillAmount_ *big.Int, expiry_ *big.Int) (*types.Transaction, error) {
+	return _RFQ.Contract.FillOrder(&_RFQ.TransactOpts, order_, signature_, to_, index_, fillAmount_, minFillAmount_, expiry_)
 }
 
 // Multicall is a paid mutator transaction binding the contract method 0xac9650d8.
@@ -614,6 +646,315 @@ func (_RFQ *RFQSession) UpdateFee(fee_ *big.Int) (*types.Transaction, error) {
 // Solidity: function updateFee(uint256 fee_) returns()
 func (_RFQ *RFQTransactorSession) UpdateFee(fee_ *big.Int) (*types.Transaction, error) {
 	return _RFQ.Contract.UpdateFee(&_RFQ.TransactOpts, fee_)
+}
+
+// WithdrawFee is a paid mutator transaction binding the contract method 0x1ac3ddeb.
+//
+// Solidity: function withdrawFee(address token_) returns()
+func (_RFQ *RFQTransactor) WithdrawFee(opts *bind.TransactOpts, token_ common.Address) (*types.Transaction, error) {
+	return _RFQ.contract.Transact(opts, "withdrawFee", token_)
+}
+
+// WithdrawFee is a paid mutator transaction binding the contract method 0x1ac3ddeb.
+//
+// Solidity: function withdrawFee(address token_) returns()
+func (_RFQ *RFQSession) WithdrawFee(token_ common.Address) (*types.Transaction, error) {
+	return _RFQ.Contract.WithdrawFee(&_RFQ.TransactOpts, token_)
+}
+
+// WithdrawFee is a paid mutator transaction binding the contract method 0x1ac3ddeb.
+//
+// Solidity: function withdrawFee(address token_) returns()
+func (_RFQ *RFQTransactorSession) WithdrawFee(token_ common.Address) (*types.Transaction, error) {
+	return _RFQ.Contract.WithdrawFee(&_RFQ.TransactOpts, token_)
+}
+
+// RFQApprovedOrderIterator is returned from FilterApprovedOrder and is used to iterate over the raw logs and unpacked data for ApprovedOrder events raised by the RFQ contract.
+type RFQApprovedOrderIterator struct {
+	Event *RFQApprovedOrder // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *RFQApprovedOrderIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(RFQApprovedOrder)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(RFQApprovedOrder)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *RFQApprovedOrderIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *RFQApprovedOrderIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// RFQApprovedOrder represents a ApprovedOrder event raised by the RFQ contract.
+type RFQApprovedOrder struct {
+	Hash [32]byte
+	Raw  types.Log // Blockchain specific contextual infos
+}
+
+// FilterApprovedOrder is a free log retrieval operation binding the contract event 0x94d8de4e917b528ff109a05cf0e0ddcb3c43c6a6258bde3dd867e890a66a535f.
+//
+// Solidity: event ApprovedOrder(bytes32 indexed hash)
+func (_RFQ *RFQFilterer) FilterApprovedOrder(opts *bind.FilterOpts, hash [][32]byte) (*RFQApprovedOrderIterator, error) {
+
+	var hashRule []interface{}
+	for _, hashItem := range hash {
+		hashRule = append(hashRule, hashItem)
+	}
+
+	logs, sub, err := _RFQ.contract.FilterLogs(opts, "ApprovedOrder", hashRule)
+	if err != nil {
+		return nil, err
+	}
+	return &RFQApprovedOrderIterator{contract: _RFQ.contract, event: "ApprovedOrder", logs: logs, sub: sub}, nil
+}
+
+// WatchApprovedOrder is a free log subscription operation binding the contract event 0x94d8de4e917b528ff109a05cf0e0ddcb3c43c6a6258bde3dd867e890a66a535f.
+//
+// Solidity: event ApprovedOrder(bytes32 indexed hash)
+func (_RFQ *RFQFilterer) WatchApprovedOrder(opts *bind.WatchOpts, sink chan<- *RFQApprovedOrder, hash [][32]byte) (event.Subscription, error) {
+
+	var hashRule []interface{}
+	for _, hashItem := range hash {
+		hashRule = append(hashRule, hashItem)
+	}
+
+	logs, sub, err := _RFQ.contract.WatchLogs(opts, "ApprovedOrder", hashRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(RFQApprovedOrder)
+				if err := _RFQ.contract.UnpackLog(event, "ApprovedOrder", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseApprovedOrder is a log parse operation binding the contract event 0x94d8de4e917b528ff109a05cf0e0ddcb3c43c6a6258bde3dd867e890a66a535f.
+//
+// Solidity: event ApprovedOrder(bytes32 indexed hash)
+func (_RFQ *RFQFilterer) ParseApprovedOrder(log types.Log) (*RFQApprovedOrder, error) {
+	event := new(RFQApprovedOrder)
+	if err := _RFQ.contract.UnpackLog(event, "ApprovedOrder", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// RFQCancelledOrderIterator is returned from FilterCancelledOrder and is used to iterate over the raw logs and unpacked data for CancelledOrder events raised by the RFQ contract.
+type RFQCancelledOrderIterator struct {
+	Event *RFQCancelledOrder // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *RFQCancelledOrderIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(RFQCancelledOrder)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(RFQCancelledOrder)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *RFQCancelledOrderIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *RFQCancelledOrderIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// RFQCancelledOrder represents a CancelledOrder event raised by the RFQ contract.
+type RFQCancelledOrder struct {
+	Hash [32]byte
+	Raw  types.Log // Blockchain specific contextual infos
+}
+
+// FilterCancelledOrder is a free log retrieval operation binding the contract event 0xa1c074a7fd20d223d57ad0a2a587d955a187d300478965a6b81f64d1b4b244a4.
+//
+// Solidity: event CancelledOrder(bytes32 indexed hash)
+func (_RFQ *RFQFilterer) FilterCancelledOrder(opts *bind.FilterOpts, hash [][32]byte) (*RFQCancelledOrderIterator, error) {
+
+	var hashRule []interface{}
+	for _, hashItem := range hash {
+		hashRule = append(hashRule, hashItem)
+	}
+
+	logs, sub, err := _RFQ.contract.FilterLogs(opts, "CancelledOrder", hashRule)
+	if err != nil {
+		return nil, err
+	}
+	return &RFQCancelledOrderIterator{contract: _RFQ.contract, event: "CancelledOrder", logs: logs, sub: sub}, nil
+}
+
+// WatchCancelledOrder is a free log subscription operation binding the contract event 0xa1c074a7fd20d223d57ad0a2a587d955a187d300478965a6b81f64d1b4b244a4.
+//
+// Solidity: event CancelledOrder(bytes32 indexed hash)
+func (_RFQ *RFQFilterer) WatchCancelledOrder(opts *bind.WatchOpts, sink chan<- *RFQCancelledOrder, hash [][32]byte) (event.Subscription, error) {
+
+	var hashRule []interface{}
+	for _, hashItem := range hash {
+		hashRule = append(hashRule, hashItem)
+	}
+
+	logs, sub, err := _RFQ.contract.WatchLogs(opts, "CancelledOrder", hashRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(RFQCancelledOrder)
+				if err := _RFQ.contract.UnpackLog(event, "CancelledOrder", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseCancelledOrder is a log parse operation binding the contract event 0xa1c074a7fd20d223d57ad0a2a587d955a187d300478965a6b81f64d1b4b244a4.
+//
+// Solidity: event CancelledOrder(bytes32 indexed hash)
+func (_RFQ *RFQFilterer) ParseCancelledOrder(log types.Log) (*RFQCancelledOrder, error) {
+	event := new(RFQCancelledOrder)
+	if err := _RFQ.contract.UnpackLog(event, "CancelledOrder", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
 }
 
 // RFQEIP712DomainChangedIterator is returned from FilterEIP712DomainChanged and is used to iterate over the raw logs and unpacked data for EIP712DomainChanged events raised by the RFQ contract.
@@ -743,6 +1084,162 @@ func (_RFQ *RFQFilterer) WatchEIP712DomainChanged(opts *bind.WatchOpts, sink cha
 func (_RFQ *RFQFilterer) ParseEIP712DomainChanged(log types.Log) (*RFQEIP712DomainChanged, error) {
 	event := new(RFQEIP712DomainChanged)
 	if err := _RFQ.contract.UnpackLog(event, "EIP712DomainChanged", log); err != nil {
+		return nil, err
+	}
+	event.Raw = log
+	return event, nil
+}
+
+// RFQFilledOrderIterator is returned from FilterFilledOrder and is used to iterate over the raw logs and unpacked data for FilledOrder events raised by the RFQ contract.
+type RFQFilledOrderIterator struct {
+	Event *RFQFilledOrder // Event containing the contract specifics and raw log
+
+	contract *bind.BoundContract // Generic contract to use for unpacking event data
+	event    string              // Event name to use for unpacking event data
+
+	logs chan types.Log        // Log channel receiving the found contract events
+	sub  ethereum.Subscription // Subscription for errors, completion and termination
+	done bool                  // Whether the subscription completed delivering logs
+	fail error                 // Occurred error to stop iteration
+}
+
+// Next advances the iterator to the subsequent event, returning whether there
+// are any more events found. In case of a retrieval or parsing error, false is
+// returned and Error() can be queried for the exact failure.
+func (it *RFQFilledOrderIterator) Next() bool {
+	// If the iterator failed, stop iterating
+	if it.fail != nil {
+		return false
+	}
+	// If the iterator completed, deliver directly whatever's available
+	if it.done {
+		select {
+		case log := <-it.logs:
+			it.Event = new(RFQFilledOrder)
+			if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+				it.fail = err
+				return false
+			}
+			it.Event.Raw = log
+			return true
+
+		default:
+			return false
+		}
+	}
+	// Iterator still in progress, wait for either a data or an error event
+	select {
+	case log := <-it.logs:
+		it.Event = new(RFQFilledOrder)
+		if err := it.contract.UnpackLog(it.Event, it.event, log); err != nil {
+			it.fail = err
+			return false
+		}
+		it.Event.Raw = log
+		return true
+
+	case err := <-it.sub.Err():
+		it.done = true
+		it.fail = err
+		return it.Next()
+	}
+}
+
+// Error returns any retrieval or parsing error occurred during filtering.
+func (it *RFQFilledOrderIterator) Error() error {
+	return it.fail
+}
+
+// Close terminates the iteration process, releasing any pending underlying
+// resources.
+func (it *RFQFilledOrderIterator) Close() error {
+	it.sub.Unsubscribe()
+	return nil
+}
+
+// RFQFilledOrder represents a FilledOrder event raised by the RFQ contract.
+type RFQFilledOrder struct {
+	Hash        [32]byte
+	Taker       common.Address
+	Order       IAjnaRFQOrder
+	LpAmount    *big.Int
+	QuoteAmount *big.Int
+	Raw         types.Log // Blockchain specific contextual infos
+}
+
+// FilterFilledOrder is a free log retrieval operation binding the contract event 0x2c7267bad8be61004a9f403f293d1817cbfbec76e9bb36a2fcaefcd8b6cadd86.
+//
+// Solidity: event FilledOrder(bytes32 indexed hash, address indexed taker, (bool,address,address,address,uint256,uint256,uint256,uint256,uint256) order, uint256 lpAmount, uint256 quoteAmount)
+func (_RFQ *RFQFilterer) FilterFilledOrder(opts *bind.FilterOpts, hash [][32]byte, taker []common.Address) (*RFQFilledOrderIterator, error) {
+
+	var hashRule []interface{}
+	for _, hashItem := range hash {
+		hashRule = append(hashRule, hashItem)
+	}
+	var takerRule []interface{}
+	for _, takerItem := range taker {
+		takerRule = append(takerRule, takerItem)
+	}
+
+	logs, sub, err := _RFQ.contract.FilterLogs(opts, "FilledOrder", hashRule, takerRule)
+	if err != nil {
+		return nil, err
+	}
+	return &RFQFilledOrderIterator{contract: _RFQ.contract, event: "FilledOrder", logs: logs, sub: sub}, nil
+}
+
+// WatchFilledOrder is a free log subscription operation binding the contract event 0x2c7267bad8be61004a9f403f293d1817cbfbec76e9bb36a2fcaefcd8b6cadd86.
+//
+// Solidity: event FilledOrder(bytes32 indexed hash, address indexed taker, (bool,address,address,address,uint256,uint256,uint256,uint256,uint256) order, uint256 lpAmount, uint256 quoteAmount)
+func (_RFQ *RFQFilterer) WatchFilledOrder(opts *bind.WatchOpts, sink chan<- *RFQFilledOrder, hash [][32]byte, taker []common.Address) (event.Subscription, error) {
+
+	var hashRule []interface{}
+	for _, hashItem := range hash {
+		hashRule = append(hashRule, hashItem)
+	}
+	var takerRule []interface{}
+	for _, takerItem := range taker {
+		takerRule = append(takerRule, takerItem)
+	}
+
+	logs, sub, err := _RFQ.contract.WatchLogs(opts, "FilledOrder", hashRule, takerRule)
+	if err != nil {
+		return nil, err
+	}
+	return event.NewSubscription(func(quit <-chan struct{}) error {
+		defer sub.Unsubscribe()
+		for {
+			select {
+			case log := <-logs:
+				// New log arrived, parse the event and forward to the user
+				event := new(RFQFilledOrder)
+				if err := _RFQ.contract.UnpackLog(event, "FilledOrder", log); err != nil {
+					return err
+				}
+				event.Raw = log
+
+				select {
+				case sink <- event:
+				case err := <-sub.Err():
+					return err
+				case <-quit:
+					return nil
+				}
+			case err := <-sub.Err():
+				return err
+			case <-quit:
+				return nil
+			}
+		}
+	}), nil
+}
+
+// ParseFilledOrder is a log parse operation binding the contract event 0x2c7267bad8be61004a9f403f293d1817cbfbec76e9bb36a2fcaefcd8b6cadd86.
+//
+// Solidity: event FilledOrder(bytes32 indexed hash, address indexed taker, (bool,address,address,address,uint256,uint256,uint256,uint256,uint256) order, uint256 lpAmount, uint256 quoteAmount)
+func (_RFQ *RFQFilterer) ParseFilledOrder(log types.Log) (*RFQFilledOrder, error) {
+	event := new(RFQFilledOrder)
+	if err := _RFQ.contract.UnpackLog(event, "FilledOrder", log); err != nil {
 		return nil, err
 	}
 	event.Raw = log

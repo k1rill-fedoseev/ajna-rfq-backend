@@ -1,6 +1,7 @@
 CREATE TABLE IF NOT EXISTS orders
 (
     hash                  TEXT    NOT NULL PRIMARY KEY ON CONFLICT ABORT,
+    lp_order              INTEGER NOT NULL,
     chain_id              TEXT    NOT NULL,
     rfq                   BLOB    NOT NULL CHECK ( length(rfq) == 20 ),
     pool                  BLOB    NOT NULL CHECK ( length(pool) == 20 ),
@@ -18,6 +19,8 @@ CREATE TABLE IF NOT EXISTS orders
     updated_at            INTEGER NOT NULL DEFAULT (unixepoch('now'))
 );
 
-CREATE INDEX IF NOT EXISTS orders_active_orders_index ON orders (updated_at) WHERE (remaining_make_amount != '0' AND remaining_make_amount != '-1' AND approved_amount != '0');
+CREATE INDEX IF NOT EXISTS orders_active_orders_index ON orders (updated_at) WHERE (remaining_make_amount != '0' AND
+                                                                                    remaining_make_amount != '-1' AND
+                                                                                    approved_amount != '0');
 
 CREATE INDEX IF NOT EXISTS orders_updated_at_index ON orders (updated_at);

@@ -1,3 +1,7 @@
+.git
+.gitignore
 config.json
 orders.db
 .dockerignore
+Dockerfile
+docker-compose.yml

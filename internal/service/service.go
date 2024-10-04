@@ -5,14 +5,12 @@ import (
 	_ "embed"
 	"log"
 	"math/big"
-	"strconv"
 	"time"
 
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/common/math"
 	"github.com/ethereum/go-ethereum/crypto"
 	"github.com/ethereum/go-ethereum/ethclient"
-	"github.com/ethereum/go-ethereum/signer/core/apitypes"
 	"github.com/pkg/errors"
 	"github.com/shopspring/decimal"
 
@@ -28,12 +26,15 @@ type Service struct {
 }
 
 type ChainService struct {
-	chainId    *big.Int
-	client     *ethclient.Client
-	factory    *contract.FactoryCaller
-	rfq        *contract.RFQCaller
-	rfqAddress common.Address
-	repo       repo.OrdersRepo
+	chainId          *big.Int
+	quoteTokens      map[common.Address]common.Address
+	collateralTokens map[common.Address]common.Address
+	client           *ethclient.Client
+	factory          *contract.FactoryCaller
+	rfq              *contract.RFQCaller
+	rfqAddress       common.Address
+	updateInterval   time.Duration
+	repo             repo.OrdersRepo
 }
 
 func NewService(cfg *config.Config, repo repo.OrdersRepo) (*Service, error) {
@@ -60,12 +61,15 @@ func NewService(cfg *config.Config, repo repo.OrdersRepo) (*Service, error) {
 			return nil, errors.Wrapf(err, "can't create rfq caller for %s", chainCfg.RFQ)
 		}
 		chains[chainIdStr] = &ChainService{
-			chainId:    chainId,
-			client:     client,
-			factory:    factory,
-			rfq:        rfq,
-			rfqAddress: chainCfg.RFQ,
-			repo:       repo,
+			chainId:          chainId,
+			quoteTokens:      make(map[common.Address]common.Address, 10),
+			collateralTokens: make(map[common.Address]common.Address, 10),
+			client:           client,
+			factory:          factory,
+			rfq:              rfq,
+			rfqAddress:       chainCfg.RFQ,
+			updateInterval:   chainCfg.UpdateInterval,
+			repo:             repo,
 		}
 	}
 	return &Service{
@@ -81,68 +85,79 @@ func (s *Service) ChainService(chainId string) (*ChainService, error) {
 	return nil, errors.Errorf("chainId %s not configured", chainId)
 }
 
-func (cs *ChainService) ListMakeOrders(maker common.Address, pools []common.Address, createdBefore *uint64) ([]*repo.StoredOrder, error) {
-	orders, err := cs.repo.ListMakeOrders(cs.chainId.String(), maker, pools, createdBefore)
-	if err != nil {
-		return nil, errors.Wrap(err, "can't list orders")
-	}
-	for i, order := range orders {
-		if time.Now().Unix()-order.UpdatedAt < 300 {
-			continue
-		}
-		log.Printf("updating order: %s\n", order.Hash)
-		newOrder, err := cs.UpdateOrder(order.SignedOrder, false)
-		if err != nil {
-			log.Printf("can't update order: %v\n", err)
-			continue
-		}
-		orders[i] = newOrder
-	}
-	return orders, nil
-}
+func (cs *ChainService) ListOrders(filter repo.Filter, limit uint64) ([]*repo.StoredOrder, *int64, error) {
+	filter.ChainId = cs.chainId.String()
+	res := make([]*repo.StoredOrder, 0, limit)
 
-func (cs *ChainService) ListTakeOrders(taker *common.Address, pools []common.Address, createdBefore *uint64) ([]*repo.StoredOrder, error) {
-	orders, err := cs.repo.ListTakeOrders(cs.chainId.String(), taker, pools, createdBefore)
-	if err != nil {
-		return nil, errors.Wrap(err, "can't list orders")
+	if limit == 0 {
+		return res, nil, nil
 	}
-	for i, order := range orders {
-		newOrder, err := cs.UpdateOrder(order.SignedOrder, false)
+
+	fetchLimit := limit
+	if filter.Active {
+		fetchLimit *= 2
+	}
+	for {
+		orders, err := cs.repo.ListOrders(filter, fetchLimit)
 		if err != nil {
-			log.Printf("can't update order: %v\n", err)
-			continue
+			return nil, nil, errors.Wrap(err, "can't list orders")
 		}
-		orders[i] = newOrder
+		if len(orders) == 0 {
+			return res, nil, nil
+		}
+		for i, order := range orders {
+			newOrder := order
+			if time.Now().Add(-cs.updateInterval).Unix() > order.UpdatedAt {
+				log.Printf("updating order: %s\n", order.Hash)
+				newOrder, err = cs.UpdateOrder(order.SignedOrder, false)
+				if err != nil {
+					log.Printf("can't update order: %v\n", err)
+					newOrder = order
+				}
+			}
+			if !filter.Active || (newOrder.RemainingMakeAmount.IsPositive() && newOrder.ApprovedAmount.IsPositive()) {
+				res = append(res, newOrder)
+				if len(res) == int(limit) {
+					if i < len(orders)-1 || len(orders) == int(fetchLimit) {
+						return res, &newOrder.CreatedAt, nil
+					}
+					return res, nil, nil
+				}
+			}
+			filter.CreatedBefore = &newOrder.CreatedAt
+		}
+		if len(orders) < int(fetchLimit) {
+			return res, nil, nil
+		}
 	}
-	return orders, nil
 }
 
 func (cs *ChainService) ValidateOrder(order types.SignedOrder) error {
-	hash, err := cs.HashOrder(order.Order)
+	hash, typedHash, err := order.Order.Hash(cs.chainId, cs.rfqAddress)
 	if err != nil {
 		return errors.Wrap(err, "can't hash order")
 	}
-	valid, err := cs.ValidateOrderSignature(order.Maker, hash, order.Signature)
+	err = order.Order.Validate()
+	if err != nil {
+		return errors.Wrap(err, "can't validate order")
+	}
+	valid, err := cs.ValidateOrderSignature(order.Maker, hash, typedHash, order.Signature)
 	if err != nil {
 		return errors.Wrap(err, "can't validate order signature")
 	}
 	if !valid {
 		return errors.New("invalid order signature")
 	}
-	pool, err := contract.NewPoolCaller(order.Pool, cs.client)
+	quoteAddress, err := cs.QuoteToken(order.Pool)
 	if err != nil {
-		return errors.Wrap(err, "can't create pool caller")
+		return err
 	}
-	quoteTokenAddress, err := pool.QuoteTokenAddress(nil)
+	collateralAddress, err := cs.CollateralToken(order.Pool)
 	if err != nil {
-		return errors.Wrap(err, "can't call quoteTokenAddress()")
-	}
-	collateralAddress, err := pool.CollateralAddress(nil)
-	if err != nil {
-		return errors.Wrap(err, "can't call collateralAddress()")
+		return err
 	}
 	subsetHash := common.HexToHash("0x2263c4378b4920f0bef611a3ff22c506afa4745b3319c50b6d704a874990b8b2")
-	poolAddress, err := cs.factory.DeployedPools(nil, subsetHash, collateralAddress, quoteTokenAddress)
+	poolAddress, err := cs.factory.DeployedPools(nil, subsetHash, collateralAddress, quoteAddress)
 	if err != nil {
 		return errors.Wrap(err, "can't call deployedPools(...)")
 	}
@@ -150,6 +165,38 @@ func (cs *ChainService) ValidateOrder(order types.SignedOrder) error {
 		return errors.New("unsupported pool address")
 	}
 	return nil
+}
+
+func (cs *ChainService) QuoteToken(pool common.Address) (common.Address, error) {
+	if token, ok := cs.quoteTokens[pool]; ok {
+		return token, nil
+	}
+	caller, err := contract.NewPoolCaller(pool, cs.client)
+	if err != nil {
+		return common.Address{}, errors.Wrap(err, "can't create pool caller")
+	}
+	token, err := caller.QuoteTokenAddress(nil)
+	if err != nil {
+		return common.Address{}, errors.Wrap(err, "can't call quoteTokenAddress()")
+	}
+	cs.quoteTokens[pool] = token
+	return token, nil
+}
+
+func (cs *ChainService) CollateralToken(pool common.Address) (common.Address, error) {
+	if token, ok := cs.collateralTokens[pool]; ok {
+		return token, nil
+	}
+	caller, err := contract.NewPoolCaller(pool, cs.client)
+	if err != nil {
+		return common.Address{}, errors.Wrap(err, "can't create pool caller")
+	}
+	token, err := caller.CollateralAddress(nil)
+	if err != nil {
+		return common.Address{}, errors.Wrap(err, "can't call collateralAddress()")
+	}
+	cs.collateralTokens[pool] = token
+	return token, nil
 }
 
 func (cs *ChainService) CheckApprovedAmount(order types.Order) (bool, *big.Int, error) {
@@ -163,26 +210,54 @@ func (cs *ChainService) CheckApprovedAmount(order types.Order) (bool, *big.Int, 
 		return false, nil, errors.Wrap(err, "can't call approvedTransferors(...)")
 	}
 	if !approved {
-		return false, nil, nil
+		return false, big.NewInt(0), nil
 	}
-	allowance, err := pool.LpAllowance(nil, big.NewInt(order.Index), cs.rfqAddress, order.Maker)
-	if err != nil {
-		return false, nil, errors.Wrap(err, "can't call lpAllowance(...)")
+
+	if order.LpOrder {
+		index := big.NewInt(order.Index)
+		allowance, err := pool.LpAllowance(nil, index, cs.rfqAddress, order.Maker)
+		if err != nil {
+			return false, nil, errors.Wrap(err, "can't call lpAllowance(...)")
+		}
+		if allowance.Cmp(big.NewInt(0)) == 0 {
+			return false, allowance, nil
+		}
+		lenderInfo, err := pool.LenderInfo(nil, index, order.Maker)
+		if err != nil {
+			return false, nil, errors.Wrap(err, "can't call lenderInfo(...)")
+		}
+		if allowance.Cmp(lenderInfo.LpBalance) < 0 {
+			return true, allowance, nil
+		}
+		return true, lenderInfo.LpBalance, nil
+	} else {
+		quote, err := cs.QuoteToken(order.Pool)
+		if err != nil {
+			return false, nil, err
+		}
+		token, err := contract.NewERC20Caller(quote, cs.client)
+		if err != nil {
+			return false, nil, errors.Wrap(err, "can't create token caller")
+		}
+		allowance, err := token.Allowance(nil, order.Maker, cs.rfqAddress)
+		if err != nil {
+			return false, nil, errors.Wrap(err, "can't call allowance(...)")
+		}
+		if allowance.Cmp(big.NewInt(0)) == 0 {
+			return false, nil, nil
+		}
+		balance, err := token.BalanceOf(nil, order.Maker)
+		if err != nil {
+			return false, nil, errors.Wrap(err, "can't call balanceOf(...)")
+		}
+		if allowance.Cmp(balance) < 0 {
+			return true, allowance, nil
+		}
+		return true, balance, nil
 	}
-	if allowance.Cmp(big.NewInt(0)) == 0 {
-		return false, nil, nil
-	}
-	lenderInfo, err := pool.LenderInfo(nil, big.NewInt(order.Index), order.Maker)
-	if err != nil {
-		return false, nil, errors.Wrap(err, "can't call lenderInfo(...)")
-	}
-	if allowance.Cmp(lenderInfo.LpBalance) < 0 {
-		return true, allowance, nil
-	}
-	return true, lenderInfo.LpBalance, nil
 }
 
-func (cs *ChainService) ValidateOrderSignature(maker common.Address, hash common.Hash, signature []byte) (bool, error) {
+func (cs *ChainService) ValidateOrderSignature(maker common.Address, hash common.Hash, typedHash common.Hash, signature []byte) (bool, error) {
 	pk, err := crypto.SigToPub(hash.Bytes(), unpackSignature(signature))
 	if err == nil {
 		signer := crypto.PubkeyToAddress(*pk)
@@ -201,7 +276,7 @@ func (cs *ChainService) ValidateOrderSignature(maker common.Address, hash common
 	if res == [4]byte{0x16, 0x26, 0xba, 0x7e} {
 		return true, nil
 	}
-	approved, err := cs.rfq.ApprovedOrders(nil, maker, hash)
+	approved, err := cs.rfq.ApprovedOrders(nil, maker, typedHash)
 	if err != nil {
 		return false, errors.Wrap(err, "can't check if order approval status")
 	}
@@ -209,11 +284,11 @@ func (cs *ChainService) ValidateOrderSignature(maker common.Address, hash common
 }
 
 func (cs *ChainService) UpdateOrder(order types.SignedOrder, requireApproval bool) (*repo.StoredOrder, error) {
-	hash, err := cs.HashOrder(order.Order)
+	_, typedHash, err := order.Order.Hash(cs.chainId, cs.rfqAddress)
 	if err != nil {
 		return nil, errors.Wrap(err, "can't hash order")
 	}
-	rem, err := cs.RemainingAmount(hash, order.Order)
+	rem, err := cs.RemainingAmount(typedHash, order.Order)
 	if err != nil {
 		return nil, errors.Wrap(err, "can't get remaining amount")
 	}
@@ -226,19 +301,18 @@ func (cs *ChainService) UpdateOrder(order types.SignedOrder, requireApproval boo
 	} else if requireApproval {
 		return nil, errors.New("insufficient allowance, full approval is mandatory")
 	}
-	storedOrder := &repo.StoredOrder{
+	newOrder, err := cs.repo.Upsert(repo.StoredOrder{
 		ChainId:             cs.chainId.String(),
 		RFQ:                 cs.rfqAddress,
-		Hash:                hash,
+		Hash:                typedHash,
 		RemainingMakeAmount: decimal.NewFromBigInt(rem, 0),
 		ApprovedAmount:      decimal.NewFromBigInt(approvedAmount, 0),
 		SignedOrder:         order,
-	}
-	err = cs.repo.Upsert(storedOrder)
+	})
 	if err != nil {
 		return nil, errors.Wrap(err, "can't upsert order")
 	}
-	return storedOrder, nil
+	return newOrder, nil
 }
 
 func (cs *ChainService) RemainingAmount(hash common.Hash, order types.Order) (*big.Int, error) {
@@ -255,63 +329,16 @@ func (cs *ChainService) RemainingAmount(hash common.Hash, order types.Order) (*b
 	return new(big.Int).Sub(order.MakeAmount.BigInt(), filledAmount), nil
 }
 
-func (cs *ChainService) HashOrder(order types.Order) (common.Hash, error) {
-	taker := "0x0000000000000000000000000000000000000000"
-	if order.Taker != nil {
-		taker = order.Taker.String()
-	}
-	data := apitypes.TypedData{
-		Types: apitypes.Types{
-			"EIP712Domain": []apitypes.Type{
-				{Name: "chainId", Type: "uint256"},
-				{Name: "name", Type: "string"},
-				{Name: "version", Type: "string"},
-				{Name: "verifyingContract", Type: "address"},
-			},
-			"Order": []apitypes.Type{
-				{Name: "maker", Type: "address"},
-				{Name: "taker", Type: "address"},
-				{Name: "pool", Type: "address"},
-				{Name: "index", Type: "uint256"},
-				{Name: "makeAmount", Type: "uint256"},
-				{Name: "minMakeAmount", Type: "uint256"},
-				{Name: "expiry", Type: "uint256"},
-				{Name: "price", Type: "uint256"},
-			},
-		},
-		PrimaryType: "Order",
-		Domain: apitypes.TypedDataDomain{
-			Name:              "Ajna RFQ",
-			Version:           "1",
-			ChainId:           (*math.HexOrDecimal256)(cs.chainId),
-			VerifyingContract: cs.rfqAddress.String(),
-			Salt:              "",
-		},
-		Message: apitypes.TypedDataMessage{
-			"maker":         order.Maker.String(),
-			"taker":         taker,
-			"pool":          order.Pool.String(),
-			"index":         strconv.FormatInt(order.Index, 10),
-			"makeAmount":    order.MakeAmount.String(),
-			"minMakeAmount": order.MinMakeAmount.String(),
-			"expiry":        order.Expiry.String(),
-			"price":         order.Price.String(),
-		},
-	}
-	hash, _, err := apitypes.TypedDataAndHash(data)
-	if err != nil {
-		return common.Hash{}, errors.Wrap(err, "can't hash typed data")
-	}
-	return common.BytesToHash(hash), nil
-}
-
 func unpackSignature(sig []byte) []byte {
+	unpacked := make([]byte, 65)
 	if len(sig) == 64 {
-		unpacked := make([]byte, 65)
-		copy(unpacked[1:], sig)
-		unpacked[0] = 27 + (sig[32] >> 7)
-		unpacked[33] &= 127
+		copy(unpacked[:64], sig)
+		unpacked[32] &= 127
+		unpacked[64] = sig[32] >> 7
 		return unpacked
+	} else {
+		copy(unpacked, sig)
+		unpacked[64] -= 27
 	}
-	return sig
+	return unpacked
 }

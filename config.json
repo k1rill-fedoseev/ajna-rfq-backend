@@ -1,24 +1,34 @@
 {
   "chains": [
     {
-      "rpc": "https://rpc.ankr.com/eth",
+      "rpc": "https://eth.llamarpc.com",
       "factory": "0x6146DD43C5622bB6D12A5240ab9CF4de14eDC625",
-      "rfq": "0x6146DD43C5622bB6D12A5240ab9CF4de14eDC625"
+      "rfq": "0xb6a68453b6509173836c20b4BcF66c139ca5CA3F",
+      "updateInterval": "5m"
     },
     {
-      "rpc": "https://rpc.ankr.com/base",
+      "rpc": "https://base.llamarpc.com",
       "factory": "0x214f62B5836D83f3D6c4f71F174209097B1A779C",
-      "rfq": "0xA3A1e968Bd6C578205E11256c8e6929f21742aAF"
+      "rfq": "0xb6a68453b6509173836c20b4BcF66c139ca5CA3F",
+      "updateInterval": "5m"
     },
     {
-      "rpc": "https://rpc.ankr.com/optimism",
+      "rpc": "https://arbitrum.llamarpc.com",
       "factory": "0xA3A1e968Bd6C578205E11256c8e6929f21742aAF",
-      "rfq": "0xA3A1e968Bd6C578205E11256c8e6929f21742aAF"
+      "rfq": "0xb6a68453b6509173836c20b4BcF66c139ca5CA3F",
+      "updateInterval": "5m"
     },
     {
-      "rpc": "https://rpc.ankr.com/arbitrum",
-      "factory": "0xA3A1e968Bd6C578205E11256c8e6929f21742aAF",
-      "rfq": "0xA3A1e968Bd6C578205E11256c8e6929f21742aAF"
+      "rpc": "https://polygon.llamarpc.com",
+      "factory": "0x1f172F881eBa06Aa7a991651780527C173783Cf6",
+      "rfq": "0xb6a68453b6509173836c20b4BcF66c139ca5CA3F",
+      "updateInterval": "5m"
+    },
+    {
+      "rpc": "https://optimism.llamarpc.com",
+      "factory": "0x609C4e8804fafC07c96bE81A8a98d0AdCf2b7Dfa",
+      "rfq": "0xb6a68453b6509173836c20b4BcF66c139ca5CA3F",
+      "updateInterval": "5m"
     }
   ]
 }

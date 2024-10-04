@@ -1,0 +1,14 @@
+services:
+  ajna-rfq:
+    build: .
+    restart: always
+    image: ajna-rfq:latest
+    expose:
+      - 80:8080
+    environment:
+      PORT: 8080
+      CONFIG_FILE: /app/cfg/config.json
+      DATABASE_FILE: /app/db/orders.db
+    volumes:
+      - /opt/ajna-rfq/cfg:/app/cfg
+      - /opt/ajna-rfq/db:/app/db

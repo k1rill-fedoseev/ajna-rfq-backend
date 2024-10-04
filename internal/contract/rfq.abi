@@ -3,17 +3,30 @@
     "type": "constructor",
     "inputs": [
       {
-        "name": "_owner",
+        "name": "owner_",
         "type": "address",
         "internalType": "address"
       },
       {
-        "name": "_fee",
+        "name": "fee_",
         "type": "uint256",
         "internalType": "uint256"
       }
     ],
     "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "DOMAIN_SEPARATOR",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes32",
+        "internalType": "bytes32"
+      }
+    ],
+    "stateMutability": "view"
   },
   {
     "type": "function",
@@ -37,6 +50,11 @@
         "type": "tuple",
         "internalType": "struct IAjnaRFQ.Order",
         "components": [
+          {
+            "name": "lpOrder",
+            "type": "bool",
+            "internalType": "bool"
+          },
           {
             "name": "maker",
             "type": "address",
@@ -205,6 +223,11 @@
         "internalType": "struct IAjnaRFQ.Order",
         "components": [
           {
+            "name": "lpOrder",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
             "name": "maker",
             "type": "address",
             "internalType": "address"
@@ -257,12 +280,17 @@
         "internalType": "address"
       },
       {
-        "name": "fillQuoteAmount_",
+        "name": "index_",
         "type": "uint256",
         "internalType": "uint256"
       },
       {
-        "name": "minFillQuoteAmount_",
+        "name": "fillAmount_",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "minFillAmount_",
         "type": "uint256",
         "internalType": "uint256"
       },
@@ -315,10 +343,15 @@
     "name": "hashOrder",
     "inputs": [
       {
-        "name": "order",
+        "name": "order_",
         "type": "tuple",
         "internalType": "struct IAjnaRFQ.Order",
         "components": [
+          {
+            "name": "lpOrder",
+            "type": "bool",
+            "internalType": "bool"
+          },
           {
             "name": "maker",
             "type": "address",
@@ -437,9 +470,132 @@
     "stateMutability": "nonpayable"
   },
   {
+    "type": "function",
+    "name": "withdrawFee",
+    "inputs": [
+      {
+        "name": "token_",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "ApprovedOrder",
+    "inputs": [
+      {
+        "name": "hash",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "CancelledOrder",
+    "inputs": [
+      {
+        "name": "hash",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      }
+    ],
+    "anonymous": false
+  },
+  {
     "type": "event",
     "name": "EIP712DomainChanged",
     "inputs": [],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "FilledOrder",
+    "inputs": [
+      {
+        "name": "hash",
+        "type": "bytes32",
+        "indexed": true,
+        "internalType": "bytes32"
+      },
+      {
+        "name": "taker",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "order",
+        "type": "tuple",
+        "indexed": false,
+        "internalType": "struct IAjnaRFQ.Order",
+        "components": [
+          {
+            "name": "lpOrder",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "maker",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "taker",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "pool",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "index",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "makeAmount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "minMakeAmount",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "expiry",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "price",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      },
+      {
+        "name": "lpAmount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      },
+      {
+        "name": "quoteAmount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
     "anonymous": false
   },
   {
@@ -500,6 +656,11 @@
   {
     "type": "error",
     "name": "InvalidFee",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "InvalidIndex",
     "inputs": []
   },
   {

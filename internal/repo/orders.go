@@ -8,10 +8,18 @@ import (
 )
 
 type OrdersRepo interface {
-	ListMakeOrders(chainId string, maker common.Address, pools []common.Address, createdBefore *uint64) ([]*StoredOrder, error)
-	ListTakeOrders(chainId string, taker *common.Address, pools []common.Address, createdBefore *uint64) ([]*StoredOrder, error)
-	ListLastUpdatedActive() ([]*StoredOrder, error)
-	Upsert(order *StoredOrder) error
+	ListOrders(filter Filter, limit uint64) ([]*StoredOrder, error)
+	Upsert(order StoredOrder) (*StoredOrder, error)
+}
+
+type Filter struct {
+	ChainId       string           `json:"chainId"`
+	LpOrder       bool             `json:"lpOrder"`
+	Maker         *common.Address  `json:"maker"`
+	Taker         *common.Address  `json:"taker"`
+	Active        bool             `json:"active"`
+	Pools         []common.Address `json:"pools"`
+	CreatedBefore *int64           `json:"createdBefore"`
 }
 
 type StoredOrder struct {
@@ -20,6 +28,7 @@ type StoredOrder struct {
 	Hash                common.Hash     `json:"hash"`
 	RemainingMakeAmount decimal.Decimal `json:"remainingMakeAmount"`
 	ApprovedAmount      decimal.Decimal `json:"approvedAmount"`
-	UpdatedAt           int64           `json:"updated_at"`
+	CreatedAt           int64           `json:"createdAt"`
+	UpdatedAt           int64           `json:"updatedAt"`
 	types.SignedOrder
 }
