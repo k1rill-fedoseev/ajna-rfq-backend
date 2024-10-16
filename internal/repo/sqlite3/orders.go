@@ -3,6 +3,7 @@ package sqlite3
 import (
 	"database/sql"
 	_ "embed"
+	"time"
 
 	sq "github.com/Masterminds/squirrel"
 	_ "github.com/mattn/go-sqlite3"
@@ -53,7 +54,9 @@ func (db *OrdersRepoSQLite3) ListOrders(filter repo.Filter, limit uint64) ([]*re
 		q = q.Where(sq.Eq{"taker": nil})
 	}
 	if filter.Active {
-		q = q.Where(sq.NotEq{"remaining_make_amount": []string{"0", "-1"}})
+		q = q.
+			Where(sq.Gt{"expiry": time.Now().Add(time.Second * 15).Unix()}).
+			Where(sq.NotEq{"remaining_make_amount": []string{"0", "-1"}})
 	}
 
 	rows, err := q.RunWith(db.db).Query()

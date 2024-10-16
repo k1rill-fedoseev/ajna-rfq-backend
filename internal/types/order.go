@@ -13,15 +13,15 @@ import (
 )
 
 type Order struct {
-	LpOrder       bool            `json:"lpOrder,omitempty"`
-	Maker         common.Address  `json:"maker,omitempty"`
-	Taker         *common.Address `json:"taker,omitempty"`
-	Pool          common.Address  `json:"pool,omitempty"`
-	Index         int64           `json:"index,omitempty"`
-	MakeAmount    decimal.Decimal `json:"makeAmount,omitempty"`
-	MinMakeAmount decimal.Decimal `json:"minMakeAmount,omitempty"`
-	Expiry        decimal.Decimal `json:"expiry,omitempty"`
-	Price         decimal.Decimal `json:"price,omitempty"`
+	LpOrder       bool            `json:"lpOrder"`
+	Maker         common.Address  `json:"maker"`
+	Taker         *common.Address `json:"taker"`
+	Pool          common.Address  `json:"pool"`
+	Index         int64           `json:"index"`
+	MakeAmount    decimal.Decimal `json:"makeAmount"`
+	MinMakeAmount decimal.Decimal `json:"minMakeAmount"`
+	Expiry        decimal.Decimal `json:"expiry"`
+	Price         decimal.Decimal `json:"price"`
 }
 
 type SignedOrder struct {

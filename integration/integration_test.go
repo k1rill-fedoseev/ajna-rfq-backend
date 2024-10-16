@@ -47,7 +47,7 @@ func TestIntegration(t *testing.T) {
 		RPC:            rpcURL,
 		Factory:        common.HexToAddress("0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9"),
 		RFQ:            common.HexToAddress("0x5FbDB2315678afecb367f032d93F642f64180aa3"),
-		UpdateInterval: time.Second * 2,
+		UpdateInterval: config.Duration(time.Second * 2),
 	}}}
 	repository, err := sqlite3.NewOrdersRepoSQLite3(":memory:")
 	if err != nil {
@@ -104,10 +104,10 @@ func TestIntegration(t *testing.T) {
 	t.Run("test fill lp order", func(t *testing.T) { InternalTestFillLPOrder(t, testServer.URL, rpc) })
 	time.Sleep(time.Second * 3)
 	t.Run("test check filled lp order", func(t *testing.T) {
-		res := fetchOrders(t, testServer.URL, "maker=0x70997970C51812dc3A010C7d01b50e0d17dc79C8")
+		res := fetchOrders(t, testServer.URL, "maker=0x70997970C51812dc3A010C7d01b50e0d17dc79C8&active=false")
 		assert.Len(t, res.Items, 2)
 		assert.Equal(t, decimal.RequireFromString("0"), res.Items[0].RemainingMakeAmount)
-		assert.Empty(t, fetchOrders(t, testServer.URL, "maker=0x70997970C51812dc3A010C7d01b50e0d17dc79C8&active=true").Items)
+		assert.Empty(t, fetchOrders(t, testServer.URL, "maker=0x70997970C51812dc3A010C7d01b50e0d17dc79C8").Items)
 	})
 
 	assert.NoError(t, rpc.Client().Call(nil, "evm_revert", id))
@@ -115,10 +115,10 @@ func TestIntegration(t *testing.T) {
 	t.Run("test fill quote order", func(t *testing.T) { InternalTestFillQuoteOrder(t, testServer.URL, rpc) })
 	time.Sleep(time.Second * 3)
 	t.Run("test check filled quote order", func(t *testing.T) {
-		res := fetchOrders(t, testServer.URL, "maker=0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC&lpOrder=false")
+		res := fetchOrders(t, testServer.URL, "maker=0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC&lpOrder=false&active=false")
 		assert.Len(t, res.Items, 2)
 		assert.Equal(t, decimal.RequireFromString("0"), res.Items[0].RemainingMakeAmount)
-		assert.Equal(t, res.Items[1:], fetchOrders(t, testServer.URL, "maker=0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC&lpOrder=false&active=true").Items)
+		assert.Equal(t, res.Items[1:], fetchOrders(t, testServer.URL, "maker=0x3C44CdDdB6a900fa2b585dd299e03d12FA4293BC&lpOrder=false").Items)
 	})
 }
 

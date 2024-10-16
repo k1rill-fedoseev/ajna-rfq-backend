@@ -28,6 +28,7 @@ type Service struct {
 type ChainService struct {
 	chainId          *big.Int
 	quoteTokens      map[common.Address]common.Address
+	quoteTokenScales map[common.Address]*big.Int
 	collateralTokens map[common.Address]common.Address
 	client           *ethclient.Client
 	factory          *contract.FactoryCaller
@@ -63,12 +64,13 @@ func NewService(cfg *config.Config, repo repo.OrdersRepo) (*Service, error) {
 		chains[chainIdStr] = &ChainService{
 			chainId:          chainId,
 			quoteTokens:      make(map[common.Address]common.Address, 10),
+			quoteTokenScales: make(map[common.Address]*big.Int, 10),
 			collateralTokens: make(map[common.Address]common.Address, 10),
 			client:           client,
 			factory:          factory,
 			rfq:              rfq,
 			rfqAddress:       chainCfg.RFQ,
-			updateInterval:   chainCfg.UpdateInterval,
+			updateInterval:   time.Duration(chainCfg.UpdateInterval),
 			repo:             repo,
 		}
 	}
@@ -183,6 +185,22 @@ func (cs *ChainService) QuoteToken(pool common.Address) (common.Address, error) 
 	return token, nil
 }
 
+func (cs *ChainService) QuoteTokenScale(pool common.Address) (*big.Int, error) {
+	if scale, ok := cs.quoteTokenScales[pool]; ok {
+		return scale, nil
+	}
+	caller, err := contract.NewPoolCaller(pool, cs.client)
+	if err != nil {
+		return nil, errors.Wrap(err, "can't create pool caller")
+	}
+	scale, err := caller.QuoteTokenScale(nil)
+	if err != nil {
+		return nil, errors.Wrap(err, "can't call quoteTokenScale()")
+	}
+	cs.quoteTokenScales[pool] = scale
+	return scale, nil
+}
+
 func (cs *ChainService) CollateralToken(pool common.Address) (common.Address, error) {
 	if token, ok := cs.collateralTokens[pool]; ok {
 		return token, nil
@@ -251,9 +269,13 @@ func (cs *ChainService) CheckApprovedAmount(order types.Order) (bool, *big.Int, 
 			return false, nil, errors.Wrap(err, "can't call balanceOf(...)")
 		}
 		if allowance.Cmp(balance) < 0 {
-			return true, allowance, nil
+			balance = allowance
 		}
-		return true, balance, nil
+		scale, err := cs.QuoteTokenScale(order.Pool)
+		if err != nil {
+			return false, nil, err
+		}
+		return true, new(big.Int).Mul(balance, scale), nil
 	}
 }
 

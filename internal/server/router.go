@@ -34,7 +34,7 @@ func NewRouter(svc *service.Service) *http.ServeMux {
 		q := r.URL.Query()
 		filter := repo.Filter{}
 		filter.LpOrder = q.Get("lpOrder") != "false"
-		filter.Active = q.Get("active") == "true"
+		filter.Active = q.Get("active") != "false"
 		if q.Has("maker") {
 			addr := common.HexToAddress(q.Get("maker"))
 			filter.Maker = &addr
